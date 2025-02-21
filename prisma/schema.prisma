@@ -1,0 +1,118 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Board {
+  id String @id @default(uuid())
+  title String
+  lists List[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  deletedAt DateTime?
+  isDeleted Boolean @default(false)
+}
+
+model List {
+  id String @id @default(uuid())
+  title String
+  boardId String
+  board Board @relation(fields: [boardId], references: [id])
+  cards Card[]
+  order Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  deletedAt DateTime?
+  isDeleted Boolean @default(false)
+}
+
+model Card {
+  id String @id @default(uuid())
+  title String
+  description String?
+  cover String?
+  listId String
+  list List @relation(fields: [listId], references: [id])
+  startDate DateTime? @default(now())
+  dueDate DateTime?
+  labels LabelsOnCard[]
+  order Int @default(0)
+  assignees UserCards[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  deletedAt DateTime?
+  isDeleted Boolean @default(false)
+
+}
+
+model Label {
+  id String @id @default(uuid())
+  name String
+  color String
+  cards LabelsOnCard[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  deletedAt DateTime?
+  isDeleted Boolean @default(false)
+}
+
+model LabelsOnCard {
+  cardId String
+  card Card @relation(fields: [cardId], references: [id])
+  labelId String
+  label Label @relation(fields: [labelId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  deletedAt DateTime?
+  isDeleted Boolean @default(false)
+
+  @@id([cardId, labelId])
+}
+
+model User {
+  id String @id @default(uuid())
+  email String @unique
+  name String
+  password String
+  profileImage String?
+
+  cards UserCards[]
+  roles Role[] @relation("User_Role")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  deletedAt DateTime?
+  isDeleted Boolean @default(false)
+
+}
+
+model Role {
+  id String @id @default(uuid())
+  name String
+  accessLevel Int
+  users User[] @relation("User_Role")
+}
+
+
+model UserCards {
+  userId String
+  user User @relation(fields: [userId], references: [id])
+  cardId String
+  card Card @relation(fields: [cardId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  deletedAt DateTime?
+  isDeleted Boolean @default(false)
+  @@id([userId, cardId])
+}
