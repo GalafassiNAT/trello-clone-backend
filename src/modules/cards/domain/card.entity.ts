@@ -1,6 +1,8 @@
 import { Entity } from 'src/@core/entity.core';
+import { Result, success } from 'src/@core/result.core';
 import { LabelOnCard } from 'src/modules/labels/domain/labelOnCard.entity';
 import { UserCard } from 'src/modules/user/domain/userCards.entity';
+import { CardError } from '../errors/card.error';
 
 export type CardProps = {
 	title: string;
@@ -84,7 +86,32 @@ export class Cards extends Entity<CardProps> {
 		this.props.isDeleted = isDeleted;
 	}
 
-	static create(props: CardProps, id?: string): Cards {
-		
+	static create(props: CardProps, id?: string): Result<Cards, CardError> {
+		if (props.title.length <= 0) {
+			return fail(new CardError('emptyTitle'));
+		}
+
+		if (!props.order) {
+			return fail(new CardError('emptyOrder'));
+		}
+
+		if (props.order < 0) {
+			return fail(new CardError('invalidOrder'));
+		}
+
+		if (props.dueDate && props.startDate && props.dueDate < props.startDate) {
+			return fail(new CardError('invalidCardDueDate'));
+		}
+
+		const data = {
+			...props,
+			startDate: props.startDate
+				? new Date(props.startDate)
+				: new Date(Date.now()),
+			dueDate: props.dueDate ? new Date(props.dueDate) : undefined,
+		};
+
+		const card = new Cards(data, id);
+		return success(card);
 	}
 }

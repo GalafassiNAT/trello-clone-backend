@@ -17,6 +17,9 @@ model Board {
   id String @id @default(uuid())
   title String
   lists List[]
+  ownerId String
+  owner User @relation(fields: [ownerId], references: [id])
+  editors User[] @relation("EditorOfBoard")
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   deletedAt DateTime?
@@ -87,6 +90,8 @@ model User {
   password String
   profileImage String?
 
+  boards Board[]
+  allowedBoards Board[] @relation("EditorOfBoard")
   cards UserCards[]
   roles Role[] @relation("User_Role")
   createdAt DateTime @default(now())
