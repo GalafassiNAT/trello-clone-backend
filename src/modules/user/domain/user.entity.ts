@@ -1,20 +1,25 @@
 import { Entity } from 'src/@core/entity.core';
 import { UserCard } from './userCards.entity';
-import { Role } from '@prisma/client';
+import { Role } from './role.entity';
 import { Result, success } from 'src/@core/result.core';
 import { UserError } from '../errors/user.error';
+import { Email } from './email.sanitizer';
+import { Password } from './password.sanitizer';
+import { Board } from 'src/modules/boards/domain/board.entity';
 
 export type UserProps = {
 	name: string;
-	email: string;
-	password: string;
+	email: Email;
+	password: Password;
 	profileImage?: string;
 	role?: Role[];
-	cards: UserCard[];
-	isDeleted: boolean;
+	cards?: UserCard[];
+	boards?: Board[];
+	allowedBoards?: Board[];
+	isDeleted?: boolean;
 };
 
-export class Users extends Entity<UserProps> {
+export class User extends Entity<UserProps> {
 	private constructor(props: UserProps, id?: string) {
 		super(props, id);
 	}
@@ -23,11 +28,11 @@ export class Users extends Entity<UserProps> {
 		return this.props.name;
 	}
 
-	get email(): string {
+	get email(): Email {
 		return this.props.email;
 	}
 
-	get password(): string {
+	get password(): Password {
 		return this.props.password;
 	}
 
@@ -35,28 +40,28 @@ export class Users extends Entity<UserProps> {
 		return this.props.profileImage;
 	}
 
-	get role(): Role[] | undefined {
-		return this.props.role;
+	get role(): Role[] {
+		return this.props.role ?? [];
 	}
 
 	get cards(): UserCard[] {
-		return this.props.cards;
+		return this.props.cards ?? [];
+	}
+
+	get boards(): Board[] {
+		return this.props.boards ?? [];
+	}
+
+	get allowedBoards(): Board[] {
+		return this.props.allowedBoards ?? [];
 	}
 
 	get isDeleted(): boolean {
-		return this.props.isDeleted;
+		return this.props.isDeleted ?? false;
 	}
 
 	set name(name: string) {
 		this.props.name = name;
-	}
-
-	set email(email: string) {
-		this.props.email = email;
-	}
-
-	set password(password: string) {
-		this.props.password = password;
 	}
 
 	set profileImage(profileImage: string | undefined) {
@@ -67,19 +72,24 @@ export class Users extends Entity<UserProps> {
 		this.props.cards = cards;
 	}
 
+	set boards(boards: Board[]) {
+		this.props.boards = boards;
+	}
+
+	set allowedBoards(boards: Board[]) {
+		this.props.allowedBoards = boards;
+	}
+
 	set isDeleted(isDeleted: boolean) {
 		this.props.isDeleted = isDeleted;
 	}
 
-	public static create(
-		props: UserProps,
-		id?: string,
-	): Result<Users, UserError> {
+	public static create(props: UserProps, id?: string): Result<User, UserError> {
 		if (props.name.length <= 0) {
 			return fail(new UserError('emptyName'));
 		}
 
-		const user = new Users(
+		const user = new User(
 			{ ...props, role: props.role || [], isDeleted: false },
 			id,
 		);

@@ -7,8 +7,8 @@ export type ListProps = {
 	title: string;
 	boardId: string;
 	order: number;
-	cards: Card[];
-	isDeleted: boolean;
+	cards?: Card[];
+	isDeleted?: boolean;
 };
 
 export class List extends Entity<ListProps> {
@@ -25,7 +25,7 @@ export class List extends Entity<ListProps> {
 	}
 
 	get cards(): Card[] {
-		return this.props.cards;
+		return this.props.cards ?? [];
 	}
 
 	get order(): number {
@@ -33,7 +33,7 @@ export class List extends Entity<ListProps> {
 	}
 
 	get isDeleted(): boolean {
-		return this.props.isDeleted;
+		return this.props.isDeleted ?? false;
 	}
 
 	set title(title: string) {

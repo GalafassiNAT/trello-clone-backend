@@ -2,10 +2,10 @@ import { Entity } from 'src/@core/entity.core';
 import { Result, success } from 'src/@core/result.core';
 import { RoleError } from '../errors/role.error';
 
-export type RoleProps = {
-	acessLevel: number;
+export interface RoleProps {
+	accessLevel: number;
 	name: string;
-};
+}
 
 export class Role extends Entity<RoleProps> {
 	private constructor(props: RoleProps, id?: string) {
@@ -13,7 +13,7 @@ export class Role extends Entity<RoleProps> {
 	}
 
 	get accessLevel(): number {
-		return this.props.acessLevel;
+		return this.props.accessLevel;
 	}
 
 	get name(): string {
@@ -21,7 +21,7 @@ export class Role extends Entity<RoleProps> {
 	}
 
 	set accessLevel(accessLevel: number) {
-		this.props.acessLevel = accessLevel;
+		this.props.accessLevel = accessLevel;
 	}
 
 	set name(name: string) {
@@ -29,7 +29,7 @@ export class Role extends Entity<RoleProps> {
 	}
 
 	static create(props: RoleProps, id?: string): Result<Role, RoleError> {
-		if (props.acessLevel < 0) {
+		if (props.accessLevel < 0) {
 			return fail(new RoleError('invalidRole'));
 		}
 

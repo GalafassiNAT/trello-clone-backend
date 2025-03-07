@@ -1,19 +1,19 @@
 import { Entity } from 'src/@core/entity.core';
 import { Result, success } from 'src/@core/result.core';
-import { LabelOnCard } from 'src/modules/labels/domain/labelOnCard.entity';
+import { LabelOnCards } from './labelOnCards.entity';
 import { UserCard } from 'src/modules/user/domain/userCards.entity';
 import { CardError } from '../errors/card.error';
 
 export type CardProps = {
 	title: string;
-	description: string;
+	description?: string;
 	cover?: string;
 	listId: string;
 	startDate?: Date;
 	dueDate?: Date;
-	labels: LabelOnCard[];
+	labels?: LabelOnCards[];
 	order: number;
-	assignees: UserCard[];
+	assignees?: UserCard[];
 	isDeleted: boolean;
 };
 
@@ -38,8 +38,8 @@ export class Cards extends Entity<CardProps> {
 		return this.props.listId;
 	}
 
-	get labels(): LabelOnCard[] {
-		return this.props.labels;
+	get labels(): LabelOnCards[] {
+		return this.props.labels || [];
 	}
 
 	get order(): number {
@@ -47,7 +47,7 @@ export class Cards extends Entity<CardProps> {
 	}
 
 	get assignees(): UserCard[] {
-		return this.props.assignees;
+		return this.props.assignees || [];
 	}
 
 	get isDeleted(): boolean {
@@ -70,7 +70,7 @@ export class Cards extends Entity<CardProps> {
 		this.props.listId = listId;
 	}
 
-	set labels(labels: LabelOnCard[]) {
+	set labels(labels: LabelOnCards[]) {
 		this.props.labels = labels;
 	}
 

@@ -1,5 +1,5 @@
 import { Entity } from 'src/@core/entity.core';
-import { LabelOnCard } from './labelOnCard.entity';
+import { LabelOnCards } from 'src/modules/cards/domain/labelOnCards.entity';
 import { Result, fail, success } from 'src/@core/result.core';
 import { LabelError } from '../errors/label.error';
 
@@ -17,7 +17,7 @@ export type LabelProps = {
 	/**
 	 * @description Campo destinado à associar uma label a um card.
 	 */
-	cards: LabelOnCard[];
+	cards?: LabelOnCards[] | [];
 
 	/**
 	 * @description Campo destinado para soft delete da label.
@@ -38,8 +38,8 @@ export class Label extends Entity<LabelProps> {
 		return this.props.name;
 	}
 
-	get cards(): LabelOnCard[] {
-		return this.props.cards;
+	get cards(): LabelOnCards[] {
+		return this.props.cards || [];
 	}
 
 	set name(name: string) {
@@ -50,7 +50,7 @@ export class Label extends Entity<LabelProps> {
 		this.props.color = color;
 	}
 
-	set cards(cards: LabelOnCard[]) {
+	set cards(cards: LabelOnCards[]) {
 		this.props.cards = cards;
 	}
 
@@ -67,6 +67,7 @@ export class Label extends Entity<LabelProps> {
 
 		const data = {
 			...props,
+			cards: props.cards || [],
 			isDeleted: false,
 		};
 

@@ -26,6 +26,7 @@ model Board {
   isDeleted Boolean @default(false)
 }
 
+
 model List {
   id String @id @default(uuid())
   title String

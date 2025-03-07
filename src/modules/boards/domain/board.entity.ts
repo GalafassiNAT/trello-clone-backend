@@ -1,12 +1,14 @@
-import { List } from '@prisma/client';
 import { Entity } from 'src/@core/entity.core';
 import { Result, success } from 'src/@core/result.core';
 import { BoardError } from '../errors/board.error';
+import { User } from 'src/modules/user/domain/user.entity';
+import { List } from 'src/modules/lists/domain/list.entity';
 
 export type BoardProps = {
 	title: string;
-	list: List[];
+	list?: List[];
 	ownerId: string;
+	editors?: User[];
 	isDeleted: boolean;
 };
 
@@ -20,11 +22,15 @@ export class Board extends Entity<BoardProps> {
 	}
 
 	get list(): List[] {
-		return this.props.list;
+		return this.props.list ?? [];
 	}
 
 	get ownerId(): string {
 		return this.props.ownerId;
+	}
+
+	get editors(): User[] {
+		return this.props.editors ?? [];
 	}
 
 	get isDeleted(): boolean {
@@ -41,6 +47,10 @@ export class Board extends Entity<BoardProps> {
 
 	set ownerId(ownerId: string) {
 		this.props.ownerId = ownerId;
+	}
+
+	set editors(editors: User[]) {
+		this.props.editors = editors;
 	}
 
 	set isDeleted(isDeleted: boolean) {
