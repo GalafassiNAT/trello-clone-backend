@@ -1,17 +1,19 @@
 import { Repository } from 'src/@core/repository.core';
 import { User } from '../domain/user.entity';
-import { FindUserDTO, UpdateUserDTO } from '../@types/user.dto';
+import { FindUserDTO } from '../@types/user.dto';
 
-export interface UserRepository extends Repository<User> {
-	create(user: User): Promise<User>;
+export abstract class UserRepository extends Repository<User> {
+	abstract create(user: User): Promise<User | null>;
 
-	findAll(): Promise<User[]>;
+	abstract findAll(): Promise<User[]>;
 
-	findOne(findOneUserDTO: FindUserDTO): Promise<User>;
+	abstract findOne(findOneUserDTO: FindUserDTO): Promise<User | null>;
 
-	update(updateUserDTO: UpdateUserDTO): Promise<User>;
+	abstract findOneDetailed(findOneUserDTO: FindUserDTO): Promise<User | null>;
 
-	updateRole(user: User): Promise<void>;
+	abstract update(user: User): Promise<User | null>;
 
-	remove(user: User): Promise<void>;
+	abstract updateRole(user: User): Promise<void>;
+
+	abstract remove(user: User): Promise<boolean>;
 }

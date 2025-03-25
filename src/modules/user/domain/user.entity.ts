@@ -1,11 +1,11 @@
 import { Entity } from 'src/@core/entity.core';
-import { UserCard } from './userCards.entity';
 import { Role } from './role.entity';
 import { Result, success } from 'src/@core/result.core';
 import { UserError } from '../errors/user.error';
 import { Email } from './email.sanitizer';
 import { Password } from './password.sanitizer';
 import { Board } from 'src/modules/boards/domain/board.entity';
+import { Cards } from 'src/modules/cards/domain/card.entity';
 
 export type UserProps = {
 	name: string;
@@ -13,7 +13,7 @@ export type UserProps = {
 	password: Password;
 	profileImage?: string;
 	role?: Role[];
-	cards?: UserCard[];
+	cards?: Cards[];
 	boards?: Board[];
 	allowedBoards?: Board[];
 	isDeleted?: boolean;
@@ -44,7 +44,7 @@ export class User extends Entity<UserProps> {
 		return this.props.role ?? [];
 	}
 
-	get cards(): UserCard[] {
+	get cards(): Cards[] {
 		return this.props.cards ?? [];
 	}
 
@@ -68,7 +68,7 @@ export class User extends Entity<UserProps> {
 		this.props.profileImage = profileImage;
 	}
 
-	set cards(cards: UserCard[]) {
+	set cards(cards: Cards[]) {
 		this.props.cards = cards;
 	}
 

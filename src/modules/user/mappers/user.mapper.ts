@@ -10,7 +10,7 @@ import {
 import { RoleMapper } from './role.mapper';
 import { Role } from '../domain/role.entity';
 import { CardMapperDetailed } from 'src/modules/cards/mappers/card.mapper';
-import { UserCard } from '../domain/userCards.entity';
+import { Cards as CardEntity } from 'src/modules/cards/domain/card.entity';
 import { BoardMapper } from 'src/modules/boards/mappers/board.mapper';
 import { Board } from 'src/modules/boards/domain/board.entity';
 
@@ -70,7 +70,7 @@ export class UserMapper {
 export class UserMapperDetailed {
 	static toDomain(
 		user: PersistentUser & {
-			role: PersistentRole[];
+			roles: PersistentRole[];
 			boards: PersistentBoard[];
 			allowedBoards: PersistentBoard[];
 			cards: PersistentCard[];
@@ -86,23 +86,14 @@ export class UserMapperDetailed {
 			return null;
 		}
 
-		const roles = user.role
+		const roles = user.roles
 			?.map((role) => RoleMapper.toDomain(role))
 			.filter((role): role is Role => role !== null);
 
 		const cards = user.cards
 			? user.cards
-					.map((card) => {
-						const crd = CardMapperDetailed.toDomain(card);
-						if (crd?.id) {
-							return {
-								cardId: crd.id,
-								userId: user.id,
-							};
-						}
-						return null;
-					})
-					.filter((card): card is UserCard => card !== null)
+					.map((card) => CardMapperDetailed.toDomain(card))
+					.filter((card): card is CardEntity => card !== null)
 			: [];
 
 		const boards = user.boards
@@ -178,11 +169,11 @@ export class UserMapperDetailed {
 						}),
 					}
 				: undefined,
-			cards: !(user.cards[0]?.cardId === null)
+			cards: !(user.cards[0]?.id === null)
 				? {
-						create: user.cards.map((card) => {
+						connect: user.cards.map((card) => {
 							return {
-								cardId: card.cardId,
+								id: card.id,
 							};
 						}),
 					}
@@ -208,9 +199,7 @@ export class UserMapperDetailed {
 				};
 			}),
 			cards: user.cards.map((card) => {
-				return {
-					cardId: card.cardId,
-				};
+				return card;
 			}),
 		};
 	}

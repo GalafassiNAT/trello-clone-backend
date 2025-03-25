@@ -1,9 +1,27 @@
 import { Module } from '@nestjs/common';
-import { PrismaService } from './shared/infra/providers/prisma/prisma.service';
+import { ConfigModule } from '@nestjs/config';
+import configuration from './config/configuration';
+import { validate as validateEnv } from './config/env-validation';
+import { TokenModule } from './shared/infra/providers/token/implementations/token.module';
+import { AuthModule } from './modules/user/infra/auth.module';
+import { APP_INTERCEPTOR } from '@nestjs/core';
+import { ResponseInterceptor } from './shared/infra/interceptors/response.inteceptor';
 
 @Module({
-	imports: [],
+	imports: [
+		ConfigModule.forRoot({
+			load: [configuration],
+			validate: validateEnv,
+		}),
+		TokenModule,
+		AuthModule,
+	],
 	controllers: [],
-	providers: [PrismaService],
+	providers: [
+		{
+			provide: APP_INTERCEPTOR,
+			useClass: ResponseInterceptor,
+		},
+	],
 })
 export class AppModule {}

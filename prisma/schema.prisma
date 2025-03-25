@@ -51,7 +51,7 @@ model Card {
   dueDate DateTime?
   labels LabelsOnCard[]
   order Int @default(0)
-  assignees UserCards[]
+  assignees User[] @relation("UserCards")
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   deletedAt DateTime?
@@ -93,7 +93,7 @@ model User {
 
   boards Board[]
   allowedBoards Board[] @relation("EditorOfBoard")
-  cards UserCards[]
+  cards Card[] @relation("UserCards")
   roles Role[] @relation("User_Role")
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -107,18 +107,4 @@ model Role {
   name String
   accessLevel Int
   users User[] @relation("User_Role")
-}
-
-
-model UserCards {
-  userId String
-  user User @relation(fields: [userId], references: [id])
-  cardId String
-  card Card @relation(fields: [cardId], references: [id])
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  deletedAt DateTime?
-  isDeleted Boolean @default(false)
-  @@id([userId, cardId])
 }

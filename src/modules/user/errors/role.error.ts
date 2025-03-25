@@ -1,6 +1,6 @@
 import { ErrorSchema } from 'src/@core/error.core';
 
-export type RoleErrors = 'emptyRole' | 'invalidRole';
+export type RoleErrors = 'emptyRole' | 'invalidRole' | 'notFound';
 
 const RoleErrorSchema: Record<RoleErrors, ErrorSchema> = {
 	emptyRole: {
@@ -10,6 +10,10 @@ const RoleErrorSchema: Record<RoleErrors, ErrorSchema> = {
 	invalidRole: {
 		statusCode: 400,
 		message: 'Role inválido.',
+	},
+	notFound: {
+		statusCode: 404,
+		message: 'Role não encontrada.',
 	},
 };
 
