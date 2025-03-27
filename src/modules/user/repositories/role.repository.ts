@@ -1,14 +1,14 @@
 import { Repository } from 'src/@core/repository.core';
 import { Role } from '../domain/role.entity';
 
-export interface RoleRepository extends Repository<Role> {
-	create(role: Role): Promise<Role | null>;
+export abstract class RoleRepository extends Repository<Role> {
+	abstract create(role: Role): Promise<Role | null>;
 
-	findAll(): Promise<Role[]>;
+	abstract findAll(): Promise<Role[]>;
 
-	findOne(id?: string): Promise<Role | null>;
+	abstract findOne(id?: string): Promise<Role | null>;
 
-	update(role: Role): Promise<Role | null>;
+	abstract update(role: Role): Promise<Role | null>;
 
-	remove(role: Role): Promise<void>;
+	abstract remove(role: Role): Promise<void>;
 }

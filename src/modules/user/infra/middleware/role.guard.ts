@@ -1,4 +1,9 @@
-import { CanActivate, ExecutionContext, SetMetadata } from '@nestjs/common';
+import {
+	CanActivate,
+	ExecutionContext,
+	Injectable,
+	SetMetadata,
+} from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { Observable } from 'rxjs';
 import { RequestWithUser } from '../../@types/user.dto';
@@ -19,16 +24,16 @@ export const Role = (access: AccessLevel) => {
 export const AccessLevel = (accessLevel: number) =>
 	SetMetadata('accessLevel', accessLevel);
 
+@Injectable()
 export class RolesGuard implements CanActivate {
 	constructor(private reflector: Reflector) {}
 
 	canActivate(
 		context: ExecutionContext,
 	): boolean | Promise<boolean> | Observable<boolean> {
-		const accessLevel = this.reflector.get<number>(
-			'accessLevel',
-			context.getHandler(),
-		);
+		const handler = context.getHandler();
+
+		const accessLevel = this.reflector.get<number>('accessLevel', handler);
 
 		const request: RequestWithUser = context.switchToHttp().getRequest();
 

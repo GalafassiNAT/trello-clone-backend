@@ -6,6 +6,7 @@ import { TokenModule } from './shared/infra/providers/token/implementations/toke
 import { AuthModule } from './modules/user/infra/auth.module';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { ResponseInterceptor } from './shared/infra/interceptors/response.inteceptor';
+import { RoleModule } from './modules/user/infra/role.module';
 
 @Module({
 	imports: [
@@ -15,6 +16,7 @@ import { ResponseInterceptor } from './shared/infra/interceptors/response.intece
 		}),
 		TokenModule,
 		AuthModule,
+		RoleModule,
 	],
 	controllers: [],
 	providers: [

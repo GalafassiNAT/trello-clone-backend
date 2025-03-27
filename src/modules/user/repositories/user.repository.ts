@@ -11,6 +11,8 @@ export abstract class UserRepository extends Repository<User> {
 
 	abstract findOneDetailed(findOneUserDTO: FindUserDTO): Promise<User | null>;
 
+	abstract findAllDetailed(): Promise<User[]>;
+
 	abstract update(user: User): Promise<User | null>;
 
 	abstract updateRole(user: User): Promise<void>;

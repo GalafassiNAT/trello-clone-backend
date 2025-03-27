@@ -18,11 +18,10 @@ export class PrismaUserRepository implements UserRepository {
 	async findAll(): Promise<User[]> {
 		const users = await this.prismaService.user.findMany({
 			where: { isDeleted: false },
-			include: { roles: true, boards: true, cards: true, allowedBoards: true },
 		});
 
 		const usersDomain = users
-			.map((user) => UserMapperDetailed.toDomain(user))
+			.map((user) => UserMapper.toDomain(user))
 			.filter((user): user is User => user !== null);
 
 		return usersDomain;
@@ -62,6 +61,24 @@ export class PrismaUserRepository implements UserRepository {
 		}
 
 		return UserMapperDetailed.toDomain(user);
+	}
+
+	async findAllDetailed(): Promise<User[]> {
+		const users = await this.prismaService.user.findMany({
+			where: { isDeleted: false },
+			include: {
+				roles: true,
+				boards: true,
+				cards: true,
+				allowedBoards: true,
+			},
+		});
+
+		const usersDomain = users
+			.map((user) => UserMapperDetailed.toDomain(user))
+			.filter((user): user is User => user !== null);
+
+		return usersDomain;
 	}
 
 	async update(user: User): Promise<User | null> {

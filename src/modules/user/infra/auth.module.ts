@@ -10,6 +10,7 @@ import { PrismaUserRepository } from '../repositories/implementations/prisma-use
 import { SignUpUseCase } from '../usecases/signUp.usecase';
 import { HashService } from 'src/shared/infra/providers/hash/hash.service';
 import { TokenService } from 'src/shared/infra/providers/token/token.service';
+import { SignInUseCase } from '../usecases/signIn.usecase';
 
 @Module({
 	imports: [ConfigModule, HashModule, TokenModule, PrismaModule],
@@ -29,6 +30,15 @@ import { TokenService } from 'src/shared/infra/providers/token/token.service';
 				hashService: HashService,
 			) => new SignUpUseCase(userRepository, tokenService, hashService),
 			inject: [UserRepository, TokenService, HashService],
+		},
+		{
+			provide: SignInUseCase,
+			useFactory: (
+				userRepository: UserRepository,
+				hashService: HashService,
+				tokenService: TokenService,
+			) => new SignInUseCase(userRepository, hashService, tokenService),
+			inject: [UserRepository, HashService, TokenService],
 		},
 	],
 })

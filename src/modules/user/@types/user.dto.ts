@@ -51,7 +51,10 @@ export class UserDTO {
 
 export class SignUpDTO extends UserDTO {}
 
-export class SignInDTO extends OmitType(SignUpDTO, ['name'] as const) {}
+export class SignInDTO extends OmitType(SignUpDTO, [
+	'name',
+	'profileImage',
+] as const) {}
 
 export class RecoverPasswordDTO extends PickType(SignUpDTO, [
 	'email',
