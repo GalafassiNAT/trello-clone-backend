@@ -9,12 +9,28 @@ import {
 	FindDetailedUsersResponse,
 	GetUsersDetailedUseCase,
 } from '@user/usecases';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { Controller, Get, UseGuards } from '@nestjs/common';
+import { DocumentMethod } from 'src/shared/infra/lib/swagger/documentMethod';
+import { GetUsersDetailedDocumentationObject } from '../documentation/user.docs';
+import { Role, RolesGuard } from '../middleware/role.guard';
+import { AuthGuard } from '../middleware/auth.guard';
 
+@ApiTags('user')
+@Controller({
+	path: '/users',
+	version: '1',
+})
 export class UserController {
 	constructor(
 		private readonly getUsersDetailedUseCase: GetUsersDetailedUseCase,
 	) {}
 
+	@DocumentMethod(GetUsersDetailedDocumentationObject)
+	@Role('full-access')
+	@UseGuards(AuthGuard, RolesGuard)
+	@Get('/')
+	@ApiBearerAuth()
 	async getUsersDetailed(): Promise<
 		HttpsResponse<FindDetailedUsersResponse[] | UserError>
 	> {

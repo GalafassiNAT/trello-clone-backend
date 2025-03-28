@@ -1,4 +1,5 @@
 import { Option } from 'src/shared/infra/lib/swagger/documentMethod';
+import { UserError } from '../../errors/user.error';
 
 export const GetUsersDetailedDocumentationObject: Option = {
 	summary: 'Retorna usuários detalhados',
@@ -41,6 +42,28 @@ export const GetUsersDetailedDocumentationObject: Option = {
 							},
 						],
 						statusCode: 201,
+					},
+				},
+			},
+		],
+		fail: [
+			{
+				status: 404,
+				description: 'Nenhum usuário encontrado',
+				examples: {
+					notFound: {
+						statusCode: UserError.schema.notFound.statusCode,
+						message: UserError.schema.notFound.message,
+					},
+				},
+			},
+			{
+				status: 500,
+				description: 'Internal Server Error',
+				examples: {
+					'fail response': {
+						statusCode: 500,
+						message: 'Internal Server Error',
 					},
 				},
 			},
